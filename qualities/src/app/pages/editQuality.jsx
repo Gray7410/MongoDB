@@ -1,34 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import EditForm from "../components/ui/editForm";
-import axios from "axios";
-import httpService from "../services/http.service";
-import config from "../config.json";
+import qualityService from "../services/quality.service";
+import { toast } from "react-toastify";
+import QualityForm from "../components/ui/qualityForm";
 
 const EditQualityPage = () => {
   const [quality, setQuality] = useState(null);
   const id = useParams().id;
-  const qualityEndPoint = `quality/${id}`;
-
-  const handleSubmit = async (data) => {
+  const updateQuality = async (content) => {
     try {
-      await httpService
-        .put(qualityEndPoint, data)
-        .then((res) => res.data.content);
+      const data = await qualityService.update(id, content);
+      return data.content;
     } catch (error) {
-      console.log("Expected error");
+      const { message } = error.response.data;
+      toast.error(message);
     }
   };
-  useEffect(async () => {
-    const { data } = await axios.get(qualityEndPoint);
+  const getQuality = async (id) => {
+    try {
+      const data = await qualityService.get(id);
+      return data.content;
+    } catch (error) {
+      const { message } = error.response.data;
+      toast.error(message);
+    }
+  };
 
-    setQuality(data.content);
+  const handleSubmit = (data) => {
+    updateQuality(data);
+  };
+  useEffect(() => {
+    getQuality(id).then((data) => {
+      setQuality(data);
+    });
   }, []);
   return (
     <>
       <h1>Edit Quality Page</h1>
       {quality !== null ? (
-        <EditForm data={quality} onSubmit={handleSubmit} />
+        <QualityForm data={quality} onSubmit={handleSubmit} />
       ) : (
         <div className="position-absolute top-50 start-50 translate-middle">
           <div className="spinner-border" role="status">

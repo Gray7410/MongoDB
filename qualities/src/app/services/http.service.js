@@ -1,4 +1,3 @@
-import { SentryError } from "@sentry/utils";
 import axios from "axios";
 import logger from "./log.service";
 import { toast } from "react-toastify";
