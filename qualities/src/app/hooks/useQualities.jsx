@@ -25,8 +25,27 @@ export const QualityProvider = ({ children }) => {
     };
     getQualities();
   }, []);
+  const getQuality = (id) => {
+    return qualities.find((q) => q._id === id);
+  };
+  const updateQuality = async ({ _id: id, ...data }) => {
+    try {
+      const { content } = await qualityService.update(id, data);
+      setQualities((prevState) =>
+        prevState.map((item) => {
+          if (item._id === content._id) {
+            return content;
+          }
+          return item;
+        })
+      );
+    } catch (error) {
+      const { message } = error.response.data;
+      setError(message);
+    }
+  };
   return (
-    <QualityContext.Provider value={{ qualities, isLoading }}>
+    <QualityContext.Provider value={{ qualities, getQuality, updateQuality }}>
       {!isLoading ? children : <h1>Qualities loading...</h1>}
     </QualityContext.Provider>
   );
