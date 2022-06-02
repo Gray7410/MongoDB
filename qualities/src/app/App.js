@@ -5,6 +5,7 @@ import NavBar from "./components/ui/NavBar";
 import routes from "./routes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { QualityProvider, useQualities } from "./hooks/useQualities";
 
 const getRoutes = (routes) => {
   return routes.map((prop, key) => {
@@ -16,12 +17,14 @@ function App() {
   return (
     <div className="App">
       <NavBar routes={routes} />
-      <Container>
-        <Switch>
-          {getRoutes(routes)}
-          <Redirect to="/" />
-        </Switch>
-      </Container>
+      <QualityProvider>
+        <Container>
+          <Switch>
+            {getRoutes(routes)}
+            <Redirect to="/" />
+          </Switch>
+        </Container>
+      </QualityProvider>
       <ToastContainer />
     </div>
   );
